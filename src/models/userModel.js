@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { compare } from "bcrypt";
 
 export const UserSchema = new Schema({
   username: {
@@ -18,3 +19,7 @@ export const UserSchema = new Schema({
     default: Date.now,
   },
 });
+
+UserSchema.methods.comparePassword = (password, hashPassword) => {
+  return compare(password, hashPassword);
+};
