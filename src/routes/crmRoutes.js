@@ -6,6 +6,10 @@ import {
   deleteContact,
 } from "../controllers/crmController";
 
+import { UserController } from "../controllers/UserController";
+
+const userController = new UserController();
+
 const routes = (app) => {
   app
     .route("/contacts")
@@ -29,6 +33,8 @@ const routes = (app) => {
 
     // delete request
     .delete(deleteContact);
+
+  app.route("/user").post(userController.create);
 };
 
 export default routes;
