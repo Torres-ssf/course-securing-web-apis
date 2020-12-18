@@ -1,7 +1,7 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { compare } from "bcrypt";
 
-export const UserSchema = new Schema({
+const UserSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -20,6 +20,8 @@ export const UserSchema = new Schema({
   },
 });
 
-UserSchema.methods.comparePassword = (password, hashPassword) => {
+UserSchema.methods.comparePassword = async (password, hashPassword) => {
   return compare(password, hashPassword);
 };
+
+export const User = model("User", UserSchema);
