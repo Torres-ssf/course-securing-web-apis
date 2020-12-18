@@ -1,4 +1,5 @@
 import { hash } from "bcrypt";
+import { sign } from "jsonwebtoken";
 import { User } from "../models/userModel";
 
 export class UserController {
@@ -24,5 +25,39 @@ export class UserController {
         message: error,
       });
     }
+  }
+
+  async login(request, response) {
+    const { email, password } = request.body;
+
+    const userExists = await User.findOne({ email });
+
+    if (!userExists) {
+      return response
+        .status(401)
+        .send({ message: "wrong email/password combination" });
+    }
+
+    const passwordMatch = await userExists.comparePassword(
+      password,
+      userExists.hashPassword
+    );
+
+    if (!passwordMatch) {
+      return response
+        .status(401)
+        .send({ message: "wrong email/password combination" });
+    }
+
+    const token = sign(
+      {
+        email: userExists.email,
+        username: userExists.username,
+        _id: userExists.id,
+      },
+      "COURSE NODE SECURITY API"
+    );
+
+    return response.json({ token });
   }
 }
